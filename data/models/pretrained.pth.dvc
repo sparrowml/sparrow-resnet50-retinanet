@@ -1,0 +1,4 @@
+outs:
+- md5: 8dea95622961a8c99d667d3efcb5630b
+  size: 136590567
+  path: pretrained.pth

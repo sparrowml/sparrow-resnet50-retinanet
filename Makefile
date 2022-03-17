@@ -2,6 +2,7 @@
 SHELL := /usr/bin/env bash
 PYTHON := python
 PYTHONPATH := `pwd`
+FAST ?= 1
 
 #* Docker variables
 IMAGE := sparrow_resnet50_retinanet
