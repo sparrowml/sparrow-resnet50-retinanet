@@ -1,7 +1,11 @@
-from typing import List, Optional, Tuple, Union
+from typing import Dict, List, Optional, Tuple, Union
 
+import numpy as np
 import torch
+import torchvision.transforms as T
+from PIL import Image
 from torchvision import models
+from sparrow_datums import FrameBoxes, BoxType
 
 from .config import DefaultConfig
 from .types import TensorDict
@@ -47,6 +51,34 @@ class RetinaNet(torch.nn.Module):
             "bbox_regression".
         """
         return self.model.forward(x, y)
+
+    def numpy_forward(
+        self, x: np.ndarray, mask_score: Optional[float] = None
+    ) -> Dict[str, np.ndarray]:
+        image_height, image_width = x.shape[:2]
+        x = T.ToTensor()(Image.fromarray(x))
+        if torch.cuda.is_available():
+            x = x.cuda()
+        result = self.forward([x])[0]
+        box_array = result["boxes"].detach().cpu().numpy()
+        labels = result["labels"].detach().cpu().numpy()
+        scores = result["scores"].detach().cpu().numpy()
+        if mask_score is not None:
+            mask = scores > mask_score
+            box_array = box_array[mask]
+            labels = labels[mask]
+            scores = scores[mask]
+        boxes = FrameBoxes(
+            box_array,
+            type=BoxType.absolute_tlbr,
+            image_width=image_width,
+            image_height=image_height,
+        )
+        return {
+            "boxes": boxes,
+            "scores": scores,
+            "labels": labels,
+        }
 
     def load(self, model_path: str, skip_classes: bool = False) -> None:
         weights = torch.load(model_path)

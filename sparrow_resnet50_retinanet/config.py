@@ -1,14 +1,17 @@
-from typing import Optional
+from typing import List, Optional
 
 import os
 from dataclasses import dataclass
 from pathlib import Path
+
+from .labels import labels
 
 
 @dataclass
 class RetinaNetConfig:
     # Paths
     data_directory: Path = Path(os.getenv("DATA_DIR", "/code/data"))
+    _raw_videos_directory: Optional[str] = None
     _dataset_directory: Optional[str] = None
     _images_directory: Optional[str] = None
     _annotations_directory: Optional[str] = None
@@ -28,6 +31,12 @@ class RetinaNetConfig:
 
     # Model
     pretrained: bool = False
+
+    @property
+    def raw_videos_directory(self) -> Path:
+        if self._raw_videos_directory:
+            return Path(self._raw_videos_directory)
+        return Path("/data/speedtrap/videos")
 
     @property
     def dataset_directory(self) -> Path:
@@ -58,6 +67,10 @@ class RetinaNetConfig:
         if self._trained_model_path:
             return Path(self._trained_model_path)
         return self.data_directory / "models/model.pth"
+
+    @property
+    def labels(self) -> List[str]:
+        return labels
 
 
 DefaultConfig = RetinaNetConfig()
