@@ -46,10 +46,3 @@ jobs:
       run: |
         make check-safety
 
-    - name: Publish package
-      env:
-        POETRY_HTTP_BASIC_SPARROW_USERNAME: ${{ secrets.POETRY_HTTP_BASIC_SPARROW_USERNAME }}
-        POETRY_HTTP_BASIC_SPARROW_PASSWORD: ""
-      run: |
-        make publish
-
