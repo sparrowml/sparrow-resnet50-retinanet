@@ -15,6 +15,7 @@ class RetinaNetConfig:
     _dataset_directory: Optional[str] = None
     _images_directory: Optional[str] = None
     _annotations_directory: Optional[str] = None
+    _predictions_directory: Optional[str] = None
     _pretrained_model_path: Optional[str] = None
     _trained_model_path: Optional[str] = None
 
@@ -23,6 +24,7 @@ class RetinaNetConfig:
     n_classes: int = 91
     n_workers: int = 4
     min_size: int = 800
+    darwin_dataset_slug: str = "retinanet-detections"
 
     # Training
     max_epochs: int = 100
@@ -55,6 +57,12 @@ class RetinaNetConfig:
         if self._annotations_directory:
             return Path(self._annotations_directory)
         return self.dataset_directory / "annotations"
+
+    @property
+    def predictions_directory(self) -> Path:
+        if self._predictions_directory:
+            return Path(self._predictions_directory)
+        return self.dataset_directory / "predictions"
 
     @property
     def pretrained_model_path(self) -> Path:

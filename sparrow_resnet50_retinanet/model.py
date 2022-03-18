@@ -5,7 +5,7 @@ import torch
 import torchvision.transforms as T
 from PIL import Image
 from torchvision import models
-from sparrow_datums import FrameBoxes, BoxType
+from sparrow_datums import FrameAugmentedBoxes, BoxType
 
 from .config import DefaultConfig
 from .types import TensorDict
@@ -29,7 +29,7 @@ class RetinaNet(torch.nn.Module):
 
     def forward(
         self, x: List[torch.Tensor], y: Optional[List[TensorDict]] = None
-    ) -> Union[TensorDict, List[TensorDict]]:
+    ) -> Union[TensorDict, List[TensorDict], FrameAugmentedBoxes]:
         """
         Forward pass for training and inference
 
@@ -50,35 +50,25 @@ class RetinaNet(torch.nn.Module):
             will be a dict with loss tensors for "classification" and
             "bbox_regression".
         """
+        if isinstance(x, np.ndarray):
+            return self.forward_numpy(x)
         return self.model.forward(x, y)
 
-    def numpy_forward(
-        self, x: np.ndarray, mask_score: Optional[float] = None
-    ) -> Dict[str, np.ndarray]:
+    def forward_numpy(self, x: np.ndarray) -> FrameAugmentedBoxes:
         image_height, image_width = x.shape[:2]
         x = T.ToTensor()(Image.fromarray(x))
         if torch.cuda.is_available():
             x = x.cuda()
         result = self.forward([x])[0]
         box_array = result["boxes"].detach().cpu().numpy()
-        labels = result["labels"].detach().cpu().numpy()
         scores = result["scores"].detach().cpu().numpy()
-        if mask_score is not None:
-            mask = scores > mask_score
-            box_array = box_array[mask]
-            labels = labels[mask]
-            scores = scores[mask]
-        boxes = FrameBoxes(
-            box_array,
+        labels = result["labels"].detach().cpu().numpy()
+        return FrameAugmentedBoxes(
+            np.concatenate([box_array, scores[:, None], labels[:, None]], -1),
             type=BoxType.absolute_tlbr,
             image_width=image_width,
             image_height=image_height,
         )
-        return {
-            "boxes": boxes,
-            "scores": scores,
-            "labels": labels,
-        }
 
     def load(self, model_path: str, skip_classes: bool = False) -> None:
         weights = torch.load(model_path)
