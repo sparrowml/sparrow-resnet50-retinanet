@@ -41,7 +41,7 @@ formatting: codestyle
 #* Linting
 .PHONY: test
 test:
-	PYTHONPATH=$(PYTHONPATH) poetry run pytest -c pyproject.toml --cov=sparrow_resnet50_retinanet sparrow_resnet50_retinanet/
+	FAST=$(FAST) PYTHONPATH=$(PYTHONPATH) poetry run pytest -c pyproject.toml --cov=sparrow_resnet50_retinanet sparrow_resnet50_retinanet/
 
 .PHONY: check-codestyle
 check-codestyle:
