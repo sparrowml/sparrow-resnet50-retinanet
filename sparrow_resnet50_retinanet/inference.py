@@ -14,18 +14,13 @@ from .model import RetinaNet
 
 
 def run_predictions(
-    images_directory: str = str(DefaultConfig.images_directory),
-    predictions_directory: str = str(DefaultConfig.predictions_directory),
     model_path: str = str(DefaultConfig.pretrained_model_path),
     n_frames: Optional[int] = None,
     score_threshold: float = 0.5,
 ) -> None:
-    config = RetinaNetConfig(
-        _images_directory=images_directory, _predictions_directory=predictions_directory
-    )
     model = RetinaNet().eval().cuda()
     model.load(model_path)
-    image_paths = list(config.images_directory.glob("*.jpg"))
+    image_paths = list(DefaultConfig.images_directory.glob("*.jpg"))
     random.shuffle(image_paths)
     if n_frames is not None:
         image_paths = image_paths[:n_frames]
@@ -35,7 +30,7 @@ def run_predictions(
         boxes: FrameAugmentedBoxes = model(img)
         boxes = boxes[boxes.scores > score_threshold]
         json_filename = f"{slug}.json.gz"
-        boxes.to_file(config.predictions_directory / json_filename)
+        boxes.to_file(DefaultConfig.predictions_directory / json_filename)
 
 
 def import_predictions(

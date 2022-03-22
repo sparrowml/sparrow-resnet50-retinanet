@@ -65,7 +65,7 @@ class RetinaNet(torch.nn.Module):
         labels = result["labels"].detach().cpu().numpy()
         return FrameAugmentedBoxes(
             np.concatenate([box_array, scores[:, None], labels[:, None]], -1),
-            type=PType.absolute_tlbr,
+            ptype=PType.absolute_tlbr,
             image_width=image_width,
             image_height=image_height,
         )

@@ -1,6 +1,7 @@
 import fire
 
 from sparrow_resnet50_retinanet import (
+    evaluate_predictions,
     import_predictions,
     run_predictions,
     sample_frames,
@@ -10,6 +11,7 @@ from sparrow_resnet50_retinanet import (
 
 if __name__ == "__main__":
     commands = {
+        "evaluate-predictions": evaluate_predictions,
         "import-predictions": import_predictions,
         "run-predictions": run_predictions,
         "sample-frames": sample_frames,

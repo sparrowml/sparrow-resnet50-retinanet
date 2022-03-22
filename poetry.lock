@@ -2405,7 +2405,7 @@ python-versions = ">=3.6"
 
 [[package]]
 name = "sparrow-datums"
-version = "0.4.1"
+version = "0.4.2"
 description = "A Python package for data structures"
 category = "main"
 optional = false
@@ -2838,7 +2838,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.9,<3.11"
-content-hash = "e7512b9655be158d9042ae030b123e23df8ee97713810f97f69763f9b06ea631"
+content-hash = "1b85b70d367fb24e455da4096ceaa6dcbac794d9143d18c610cf23aa90d05e3e"
 
 [metadata.files]
 absl-py = [
@@ -4508,8 +4508,8 @@ soupsieve = [
     {file = "soupsieve-2.3.1.tar.gz", hash = "sha256:b8d49b1cd4f037c7082a9683dfa1801aa2597fb11c3a1155b7a5b94829b4f1f9"},
 ]
 sparrow-datums = [
-    {file = "sparrow-datums-0.4.1.tar.gz", hash = "md5:4e55975c551be460f9748266d09da2f4"},
-    {file = "sparrow_datums-0.4.1-py3-none-any.whl", hash = "md5:af314c2f0c94fff8350237e09e656052"},
+    {file = "sparrow-datums-0.4.2.tar.gz", hash = "md5:a7ae481417ce1093314d465bfd8e3d9b"},
+    {file = "sparrow_datums-0.4.2-py3-none-any.whl", hash = "md5:6c446c64445178b8c957647cd5115677"},
 ]
 sparrow-tracky = [
     {file = "sparrow-tracky-0.1.4.tar.gz", hash = "md5:95bf93b2d7dcc68715c83010995a913d"},
