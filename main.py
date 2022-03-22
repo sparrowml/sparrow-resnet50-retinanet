@@ -5,6 +5,7 @@ from sparrow_resnet50_retinanet import (
     run_predictions,
     sample_frames,
     save_pretrained,
+    version_annotations,
 )
 
 if __name__ == "__main__":
@@ -13,5 +14,6 @@ if __name__ == "__main__":
         "run-predictions": run_predictions,
         "sample-frames": sample_frames,
         "save-pretrained": save_pretrained,
+        "version-annotations": version_annotations,
     }
-    fps = fire.Fire(commands)
+    fire.Fire(commands)

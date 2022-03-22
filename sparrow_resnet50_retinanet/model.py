@@ -5,7 +5,7 @@ import torch
 import torchvision.transforms as T
 from PIL import Image
 from torchvision import models
-from sparrow_datums import FrameAugmentedBoxes, BoxType
+from sparrow_datums import FrameAugmentedBoxes, PType
 
 from .config import DefaultConfig
 from .types import TensorDict
@@ -65,7 +65,7 @@ class RetinaNet(torch.nn.Module):
         labels = result["labels"].detach().cpu().numpy()
         return FrameAugmentedBoxes(
             np.concatenate([box_array, scores[:, None], labels[:, None]], -1),
-            type=BoxType.absolute_tlbr,
+            type=PType.absolute_tlbr,
             image_width=image_width,
             image_height=image_height,
         )
