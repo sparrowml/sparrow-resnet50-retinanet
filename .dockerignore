@@ -37,3 +37,4 @@ venv
 .LSOverride
 ._*
 .dvc/
+lightning_logs/

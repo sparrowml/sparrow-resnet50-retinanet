@@ -2,7 +2,6 @@ import os
 
 import torch
 
-from .config import DefaultConfig
 from .dataset import get_image_ids, get_sample_dicts, Holdout, RetinaNetDataset
 
 

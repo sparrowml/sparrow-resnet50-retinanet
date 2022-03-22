@@ -14,7 +14,7 @@ from PIL import Image
 from sparrow_datums import FrameAugmentedBoxes
 from tqdm import tqdm
 
-from .config import DefaultConfig
+from .config import Config
 
 
 class Holdout(enum.Enum):
@@ -24,7 +24,7 @@ class Holdout(enum.Enum):
 
 
 def sample_frames() -> None:
-    video_paths = list(DefaultConfig.raw_videos_directory.glob("*.mp4"))
+    video_paths = list(Config.raw_videos_directory.glob("*.mp4"))
     for raw_video in tqdm(video_paths):
         slug, _ = os.path.splitext(raw_video.name)
         reader = imageio.get_reader(raw_video)
@@ -32,7 +32,7 @@ def sample_frames() -> None:
         total_frames = int(fps * duration)
         for frame_index in range(0, total_frames, round(fps)):
             image_name = f"{slug}_{frame_index:05d}.jpg"
-            image_path = DefaultConfig.images_directory / image_name
+            image_path = Config.images_directory / image_name
             try:
                 image = reader.get_data(frame_index)
             except (IndexError, OSError):
@@ -42,10 +42,10 @@ def sample_frames() -> None:
 
 def version_annotations(darwin_annotations_directory: str) -> None:
     for darwin_path in Path(darwin_annotations_directory).glob("*.json"):
-        boxes = FrameAugmentedBoxes.from_darwin_file(darwin_path, DefaultConfig.labels)
+        boxes = FrameAugmentedBoxes.from_darwin_file(darwin_path, Config.labels)
         slug, _ = os.path.splitext(darwin_path.name)
         annotation_filename = f"{slug}.json.gz"
-        annotation_path = DefaultConfig.annotations_directory / annotation_filename
+        annotation_path = Config.annotations_directory / annotation_filename
         boxes.to_file(annotation_path)
 
 
@@ -53,8 +53,7 @@ def get_image_ids(
     holdout: Optional[Holdout] = None,
 ) -> list[str]:
     image_ids = [
-        p.name.split(".")[0]
-        for p in DefaultConfig.annotations_directory.glob("*.json.gz")
+        p.name.split(".")[0] for p in Config.annotations_directory.glob("*.json.gz")
     ]
     if holdout == Holdout.TRAIN:
         image_ids = set(filter(lambda id: hash(id) % 10 < 8, image_ids))
@@ -77,8 +76,8 @@ def get_sample_dicts(
     samples = []
 
     for slug in image_ids:
-        image_path = DefaultConfig.images_directory / f"{slug}.jpg"
-        annotation_path = DefaultConfig.annotations_directory / f"{slug}.json.gz"
+        image_path = Config.images_directory / f"{slug}.jpg"
+        annotation_path = Config.annotations_directory / f"{slug}.json.gz"
         boxes: FrameAugmentedBoxes = (
             FrameAugmentedBoxes.from_file(annotation_path).to_relative().to_tlbr()
         )

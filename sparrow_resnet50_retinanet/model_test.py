@@ -6,7 +6,7 @@ import onnxruntime as ort
 import pytest
 import torch
 
-from .config import DefaultConfig
+from .config import Config
 from .model import RetinaNet, export
 
 
@@ -38,5 +38,5 @@ def test_retinanet_compiles_to_valid_onnx():
 
 def test_retinanet_can_load_pretrained_model():
     model = RetinaNet()
-    status = model.load(DefaultConfig.pretrained_model_path, skip_classes=True)
+    status = model.load(Config.pretrained_model_path, skip_classes=True)
     assert "missing_keys" in str(status)

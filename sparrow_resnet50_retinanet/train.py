@@ -7,7 +7,7 @@ import torch
 from pytorch_lightning.callbacks import EarlyStopping
 from sparrow_tracky import MODA
 
-from .config import DefaultConfig, RetinaNetConfig
+from .config import Config
 from .dataset import RetinaNetDataset, Holdout
 from .model import RetinaNet
 from .utils import batch_moda
@@ -16,13 +16,13 @@ from .utils import batch_moda
 class RetinaNetTrainer(pl.LightningModule):
     def __init__(self) -> None:
         super().__init__()
-        self.model = RetinaNet(n_classes=DefaultConfig.n_classes)
-        self.learning_rate = DefaultConfig.learning_rate
+        self.model = RetinaNet(n_classes=Config.n_classes)
+        self.learning_rate = Config.learning_rate
         self.train_dataset = RetinaNetDataset(Holdout.TRAIN)
         self.dev_dataset = RetinaNetDataset(Holdout.DEV)
         self.test_dataset = RetinaNetDataset(Holdout.TEST)
-        self.batch_size = DefaultConfig.batch_size
-        self.n_workers = DefaultConfig.n_workers
+        self.batch_size = Config.batch_size
+        self.n_workers = Config.n_workers
 
     def train_dataloader(self) -> torch.utils.data.DataLoader:
         return torch.utils.data.DataLoader(
@@ -87,16 +87,16 @@ class RetinaNetTrainer(pl.LightningModule):
 
 
 def train_model(
-    pretrained_model_path: Union[Path, str] = str(DefaultConfig.pretrained_model_path),
+    pretrained_model_path: Union[Path, str] = str(Config.pretrained_model_path),
     skip_classes: bool = False,
-    max_epochs: int = DefaultConfig.max_epochs,
+    max_epochs: int = Config.max_epochs,
     max_steps: Optional[int] = -1,  # For testing
 ) -> None:
     early_stop = EarlyStopping("dev_moda", mode="max")
     trainer = pl.Trainer(
         max_epochs=max_epochs,
         max_steps=max_steps,
-        gpus=DefaultConfig.gpus,
+        gpus=Config.gpus,
         callbacks=[early_stop],
     )
     lightning = RetinaNetTrainer()
@@ -105,11 +105,7 @@ def train_model(
     trainer.fit(lightning)
 
 
-def save_checkpoint(
-    checkpoint_path: str,
-    dataset_directory: str = DefaultConfig.dataset_directory,
-) -> None:
-    config = RetinaNetConfig(_dataset_directory=dataset_directory)
-    lightning = RetinaNetTrainer(dataset_directory=dataset_directory)
+def save_checkpoint(checkpoint_path: str) -> None:
+    lightning = RetinaNetTrainer()
     lightning = lightning.load_from_checkpoint(checkpoint_path)
-    torch.save(lightning.model.state_dict(), config.trained_model_path)
+    torch.save(lightning.model.state_dict(), Config.trained_model_path)

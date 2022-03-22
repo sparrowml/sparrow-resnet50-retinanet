@@ -7,17 +7,16 @@ from PIL import Image
 from torchvision import models
 from sparrow_datums import FrameAugmentedBoxes, PType
 
-from .config import DefaultConfig
-from .types import TensorDict
+from .config import Config
 from .utils import result_to_boxes
 
 
 class RetinaNet(torch.nn.Module):
     def __init__(
         self,
-        pretrained: bool = DefaultConfig.pretrained,
-        n_classes: int = DefaultConfig.n_classes,
-        min_size: int = DefaultConfig.min_size,
+        pretrained: bool = Config.pretrained,
+        n_classes: int = Config.n_classes,
+        min_size: int = Config.min_size,
     ) -> None:
         super().__init__()
         self.n_classes = n_classes
@@ -29,8 +28,10 @@ class RetinaNet(torch.nn.Module):
         )
 
     def forward(
-        self, x: list[torch.Tensor], y: Optional[list[TensorDict]] = None
-    ) -> Union[TensorDict, list[TensorDict], FrameAugmentedBoxes]:
+        self, x: list[torch.Tensor], y: Optional[list[dict[str, torch.Tensor]]] = None
+    ) -> Union[
+        dict[str, torch.Tensor], list[dict[str, torch.Tensor]], FrameAugmentedBoxes
+    ]:
         """
         Forward pass for training and inference
 
@@ -77,7 +78,7 @@ class RetinaNet(torch.nn.Module):
 
 
 def save_pretrained(
-    pretrained_model_path: str = str(DefaultConfig.pretrained_model_path),
+    pretrained_model_path: str = str(Config.pretrained_model_path),
 ) -> None:
     model = RetinaNet(pretrained=True, n_classes=91)
     torch.save(model.state_dict(), pretrained_model_path)

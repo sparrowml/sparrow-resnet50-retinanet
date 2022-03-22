@@ -1,4 +1,4 @@
-labels = [
+labels = (
     "__background__",
     "person",
     "bicycle",
@@ -91,4 +91,4 @@ labels = [
     "hair drier",
     "toothbrush",
     "hair brush",
-]
+)

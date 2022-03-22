@@ -1,6 +1,3 @@
-from typing import Optional
-
-import os
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -8,16 +5,16 @@ from .labels import labels
 
 
 @dataclass
-class RetinaNetConfig:
+class Config:
     # Paths
-    data_directory: Path = Path(os.getenv("DATA_DIR", "/code/data"))
-    _raw_videos_directory: Optional[str] = None
-    _dataset_directory: Optional[str] = None
-    _images_directory: Optional[str] = None
-    _annotations_directory: Optional[str] = None
-    _predictions_directory: Optional[str] = None
-    _pretrained_model_path: Optional[str] = None
-    _trained_model_path: Optional[str] = None
+    data_directory: Path = Path("/code/data")
+    raw_videos_directory: Path = Path("/data/speedtrap/videos")
+    images_directory: Path = Path("/code/data/dataset/images")
+    annotations_directory: Path = Path("/code/data/dataset/annotations")
+    predictions_directory: Path = Path("/code/data/dataset/predictions")
+
+    pretrained_model_path: Path = Path("/code/data/models/pretrained.pth")
+    trained_model_path: Path = Path("/code/data/models/model.pth")
 
     # Dataset
     batch_size: int = 2
@@ -25,6 +22,7 @@ class RetinaNetConfig:
     n_workers: int = 4
     min_size: int = 800
     darwin_dataset_slug: str = "retinanet-detections"
+    labels: tuple[str, ...] = labels
 
     # Training
     max_epochs: int = 100
@@ -33,52 +31,3 @@ class RetinaNetConfig:
 
     # Model
     pretrained: bool = False
-
-    @property
-    def raw_videos_directory(self) -> Path:
-        if self._raw_videos_directory:
-            return Path(self._raw_videos_directory)
-        return Path("/data/speedtrap/videos")
-
-    @property
-    def dataset_directory(self) -> Path:
-        if self._dataset_directory:
-            return Path(self._dataset_directory)
-        return self.data_directory / "dataset"
-
-    @property
-    def images_directory(self) -> Path:
-        if self._images_directory:
-            return Path(self._images_directory)
-        return self.dataset_directory / "images"
-
-    @property
-    def annotations_directory(self) -> Path:
-        if self._annotations_directory:
-            return Path(self._annotations_directory)
-        return self.dataset_directory / "annotations"
-
-    @property
-    def predictions_directory(self) -> Path:
-        if self._predictions_directory:
-            return Path(self._predictions_directory)
-        return self.dataset_directory / "predictions"
-
-    @property
-    def pretrained_model_path(self) -> Path:
-        if self._pretrained_model_path:
-            return Path(self._pretrained_model_path)
-        return self.data_directory / "models/pretrained.pth"
-
-    @property
-    def trained_model_path(self) -> Path:
-        if self._trained_model_path:
-            return Path(self._trained_model_path)
-        return self.data_directory / "models/model.pth"
-
-    @property
-    def labels(self) -> list[str]:
-        return labels
-
-
-DefaultConfig = RetinaNetConfig()
