@@ -6,6 +6,7 @@ from sparrow_resnet50_retinanet import (
     run_predictions,
     sample_frames,
     save_pretrained,
+    train_model,
     version_annotations,
 )
 
@@ -16,6 +17,7 @@ if __name__ == "__main__":
         "run-predictions": run_predictions,
         "sample-frames": sample_frames,
         "save-pretrained": save_pretrained,
+        "train-model": train_model,
         "version-annotations": version_annotations,
     }
     fire.Fire(commands)

@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Optional
 
 import os
 from dataclasses import dataclass
@@ -20,7 +20,7 @@ class RetinaNetConfig:
     _trained_model_path: Optional[str] = None
 
     # Dataset
-    batch_size: int = 8
+    batch_size: int = 2
     n_classes: int = 91
     n_workers: int = 4
     min_size: int = 800
@@ -77,7 +77,7 @@ class RetinaNetConfig:
         return self.data_directory / "models/model.pth"
 
     @property
-    def labels(self) -> List[str]:
+    def labels(self) -> list[str]:
         return labels
 
 

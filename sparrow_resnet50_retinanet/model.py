@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Optional, Union
 
 import numpy as np
 import torch
@@ -9,6 +9,7 @@ from sparrow_datums import FrameAugmentedBoxes, PType
 
 from .config import DefaultConfig
 from .types import TensorDict
+from .utils import result_to_boxes
 
 
 class RetinaNet(torch.nn.Module):
@@ -28,8 +29,8 @@ class RetinaNet(torch.nn.Module):
         )
 
     def forward(
-        self, x: List[torch.Tensor], y: Optional[List[TensorDict]] = None
-    ) -> Union[TensorDict, List[TensorDict], FrameAugmentedBoxes]:
+        self, x: list[torch.Tensor], y: Optional[list[TensorDict]] = None
+    ) -> Union[TensorDict, list[TensorDict], FrameAugmentedBoxes]:
         """
         Forward pass for training and inference
 
@@ -60,12 +61,8 @@ class RetinaNet(torch.nn.Module):
         if torch.cuda.is_available():
             x = x.cuda()
         result = self.forward([x])[0]
-        box_array = result["boxes"].detach().cpu().numpy()
-        scores = result["scores"].detach().cpu().numpy()
-        labels = result["labels"].detach().cpu().numpy()
-        return FrameAugmentedBoxes(
-            np.concatenate([box_array, scores[:, None], labels[:, None]], -1),
-            ptype=PType.absolute_tlbr,
+        return result_to_boxes(
+            result,
             image_width=image_width,
             image_height=image_height,
         )
@@ -88,7 +85,7 @@ def save_pretrained(
 
 def export(
     output_path: str,
-    input_shape: Tuple[int, int, int] = (3, 512, 512),
+    input_shape: tuple[int, int, int] = (3, 512, 512),
 ) -> None:
     x = torch.randn(*input_shape)
     model = RetinaNet().eval()

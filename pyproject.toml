@@ -26,7 +26,7 @@ fire = "^0.4.0"
 onnxruntime = "^1.10.0"
 pytorch-lightning = "^1.5.10"
 sparrow-datums = ">=0.4.2"
-sparrow-tracky = ">=0.1.4"
+sparrow-tracky = ">=0.1.7"
 torch = { url = "https://download.pytorch.org/whl/cu113/torch-1.10.0%2Bcu113-cp39-cp39-linux_x86_64.whl" }
 torchvision = { url = "https://download.pytorch.org/whl/cu113/torchvision-0.11.0%2Bcu113-cp39-cp39-linux_x86_64.whl" }
 # Pin dvc[s3] dependencies

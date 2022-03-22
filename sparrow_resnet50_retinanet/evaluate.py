@@ -1,7 +1,7 @@
 from collections import defaultdict
 
 from sparrow_datums import FrameAugmentedBoxes
-from sparrow_tracky import compute_moda, MODA
+from sparrow_tracky import compute_moda_by_class, MODA
 
 from .config import DefaultConfig
 
@@ -15,12 +15,9 @@ def evaluate_predictions() -> None:
             n_evaluations += 1
             predicted_boxes = FrameAugmentedBoxes.from_file(predictions_path)
             ground_truth_boxes = FrameAugmentedBoxes.from_file(annotation_path)
-            all_labels = set(predicted_boxes.labels) | set(ground_truth_boxes.labels)
-            for label in all_labels:
-                moda_collector[label] += compute_moda(
-                    predicted_boxes[predicted_boxes.labels == label],
-                    ground_truth_boxes[ground_truth_boxes.labels == label],
-                )
+            moda_dict = compute_moda_by_class(predicted_boxes, ground_truth_boxes)
+            for label, moda in moda_dict.items():
+                moda_collector[label] += moda
     print(f"{n_evaluations} evaluations")
     print("=========")
     total = MODA()
