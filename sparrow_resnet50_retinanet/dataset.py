@@ -9,20 +9,16 @@ from tqdm import tqdm
 from .config import DefaultConfig
 
 
-def sample_frames(
-    raw_videos_directory: str = str(DefaultConfig.raw_videos_directory),
-    frames_directory: str = "/data/darwin/sparrow-computing/retinanet-detections/images",
-) -> None:
-    raw_videos_path = Path(raw_videos_directory)
-    frames_path = Path(frames_directory)
-    video_paths = list(raw_videos_path.glob("*.mp4"))
+def sample_frames() -> None:
+    video_paths = list(DefaultConfig.raw_videos_directory.glob("*.mp4"))
     for raw_video in tqdm(video_paths):
         slug, _ = os.path.splitext(raw_video.name)
         reader = imageio.get_reader(raw_video)
         fps, duration = itemgetter("fps", "duration")(reader.get_meta_data())
         total_frames = int(fps * duration)
         for frame_index in range(0, total_frames, round(fps)):
-            image_path = frames_path / f"{slug}_{frame_index:05d}.jpg"
+            image_name = f"{slug}_{frame_index:05d}.jpg"
+            image_path = DefaultConfig.images_directory / image_name
             try:
                 image = reader.get_data(frame_index)
             except (IndexError, OSError):

@@ -9,7 +9,7 @@ from darwin import Client, importer
 from sparrow_datums import FrameAugmentedBoxes
 from tqdm import tqdm
 
-from .config import RetinaNetConfig, DefaultConfig
+from .config import DefaultConfig
 from .model import RetinaNet
 
 
@@ -33,21 +33,13 @@ def run_predictions(
         boxes.to_file(DefaultConfig.predictions_directory / json_filename)
 
 
-def import_predictions(
-    darwin_dataset_slug: str = DefaultConfig.darwin_dataset_slug,
-    predictions_directory: str = str(DefaultConfig.predictions_directory),
-) -> None:
-    config = RetinaNetConfig(
-        _predictions_directory=predictions_directory,
-        darwin_dataset_slug=darwin_dataset_slug,
-    )
+def import_predictions() -> None:
     client = Client.local()
-    dataset = next(
-        d for d in client.list_remote_datasets() if d.slug == config.darwin_dataset_slug
-    )
+    slug = DefaultConfig.darwin_dataset_slug
+    dataset = next(d for d in client.list_remote_datasets() if d.slug == slug)
     with tempfile.TemporaryDirectory() as tmpdir:
         annotation_paths = []
-        for prediction_path in config.predictions_directory.glob("*.json.gz"):
+        for prediction_path in DefaultConfig.predictions_directory.glob("*.json.gz"):
             slug = prediction_path.name.split(".")[0]
             boxes: FrameAugmentedBoxes = FrameAugmentedBoxes.from_file(prediction_path)
             annotation_path = os.path.join(tmpdir, f"{slug}.json")
@@ -59,6 +51,6 @@ def import_predictions(
             dataset,
             importer.get_importer("darwin"),
             annotation_paths,
-            append=False,
+            append=True,
             class_prompt=False,
         )
