@@ -79,7 +79,7 @@ def get_sample_dicts(
         image_path = Config.images_directory / f"{slug}.jpg"
         annotation_path = Config.annotations_directory / f"{slug}.json.gz"
         boxes: FrameAugmentedBoxes = (
-            FrameAugmentedBoxes.from_file(annotation_path).to_relative().to_tlbr()
+            FrameAugmentedBoxes.from_file(annotation_path).to_absolute().to_tlbr()
         )
         samples.append(
             {

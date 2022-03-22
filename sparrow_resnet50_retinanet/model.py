@@ -14,17 +14,18 @@ from .utils import result_to_boxes
 class RetinaNet(torch.nn.Module):
     def __init__(
         self,
-        pretrained: bool = Config.pretrained,
         n_classes: int = Config.n_classes,
         min_size: int = Config.min_size,
+        trainable_backbone_layers: int = Config.trainable_backbone_layers,
     ) -> None:
         super().__init__()
         self.n_classes = n_classes
         self.model = models.detection.retinanet_resnet50_fpn(
             progress=False,
-            pretrained=pretrained,
+            pretrained=False,
             num_classes=n_classes,
             min_size=min_size,
+            trainable_backbone_layers=trainable_backbone_layers,
         )
 
     def forward(

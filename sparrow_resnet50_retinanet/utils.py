@@ -25,7 +25,7 @@ def result_to_boxes(
         scores = np.ones(len(labels))
     return FrameAugmentedBoxes(
         np.concatenate([box_data, scores[:, None], labels[:, None]], -1),
-        ptype=PType.absolute_tlwh,
+        ptype=PType.absolute_tlbr,
         image_width=image_width,
         image_height=image_height,
     )
@@ -34,10 +34,12 @@ def result_to_boxes(
 def batch_moda(
     results: list[dict[str, torch.Tensor]],
     batch: list[dict[str, torch.Tensor]],
+    score_threshold: float = 0.5,
 ) -> MODA:
     moda = MODA()
     for result, sample in zip(results, batch):
         predicted_boxes = result_to_boxes(result)
+        predicted_boxes = predicted_boxes[predicted_boxes.scores > score_threshold]
         ground_truth_boxes = result_to_boxes(sample)
         moda_dict = compute_moda_by_class(predicted_boxes, ground_truth_boxes)
         moda += sum(moda_dict.values())

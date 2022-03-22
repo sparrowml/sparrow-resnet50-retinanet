@@ -30,4 +30,4 @@ class Config:
     learning_rate: float = 0.00025
 
     # Model
-    pretrained: bool = False
+    trainable_backbone_layers: int = 0

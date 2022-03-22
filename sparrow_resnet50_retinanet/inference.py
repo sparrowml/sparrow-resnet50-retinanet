@@ -14,9 +14,10 @@ from .model import RetinaNet
 
 
 def run_predictions(
-    model_path: str = str(Config.pretrained_model_path),
+    model_path: str = str(Config.trained_model_path),
     n_frames: Optional[int] = None,
     score_threshold: float = 0.5,
+    annotated_only: bool = False,
 ) -> None:
     model = RetinaNet().eval().cuda()
     model.load(model_path)
@@ -25,6 +26,12 @@ def run_predictions(
     if n_frames is not None:
         image_paths = image_paths[:n_frames]
     for image_path in tqdm(image_paths):
+        if annotated_only:
+            annotation_path = Config.annotations_directory / image_path.name.replace(
+                "jpg", "json.gz"
+            )
+            if not annotation_path.exists():
+                continue
         slug, _ = os.path.splitext(image_path.name)
         img = imageio.imread(image_path)
         boxes: FrameAugmentedBoxes = model(img)
