@@ -3,9 +3,19 @@ from typing import Optional
 import numpy as np
 import numpy.typing as npt
 import torch
-
+from darwin import Client, dataset
 from sparrow_datums import FrameAugmentedBoxes, PType
 from sparrow_tracky import MODA, compute_moda_by_class
+
+from .config import Config
+
+
+def instantiate_darwin() -> tuple[Client, dataset.RemoteDataset]:
+    client = Client.local()
+    dataset = next(
+        d for d in client.list_remote_datasets() if d.slug == Config.darwin_dataset_slug
+    )
+    return client, dataset
 
 
 def to_numpy(x: torch.Tensor) -> npt.NDArray[np.float64]:

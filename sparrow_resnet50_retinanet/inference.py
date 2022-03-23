@@ -47,17 +47,20 @@ def import_predictions() -> None:
     with tempfile.TemporaryDirectory() as tmpdir:
         annotation_paths = []
         for prediction_path in Config.predictions_directory.glob("*.json.gz"):
+            annotation_path = Config.annotations_directory / prediction_path.name
+            if annotation_path.exists():
+                continue
             slug = prediction_path.name.split(".")[0]
             boxes: FrameAugmentedBoxes = FrameAugmentedBoxes.from_file(prediction_path)
             annotation_path = os.path.join(tmpdir, f"{slug}.json")
             annotation_paths.append(annotation_path)
-            boxes.to_darwin_annotation_file(
+            boxes.to_darwin_file(
                 annotation_path, f"{slug}.jpg", label_names=Config.labels
             )
         importer.import_annotations(
             dataset,
             importer.get_importer("darwin"),
             annotation_paths,
-            append=True,
+            append=False,
             class_prompt=False,
         )
