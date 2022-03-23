@@ -18,9 +18,9 @@ from .config import Config
 
 
 class Holdout(enum.Enum):
-    TRAIN = 1
-    DEV = 2
-    TEST = 3
+    train = "train"
+    dev = "dev"
+    test = "test"
 
 
 def sample_frames() -> None:
@@ -49,17 +49,17 @@ def version_annotations(darwin_annotations_directory: str) -> None:
         boxes.to_file(annotation_path)
 
 
-def get_image_ids(
+def get_holdout_slugs(
     holdout: Optional[Holdout] = None,
 ) -> list[str]:
     image_ids = [
         p.name.split(".")[0] for p in Config.annotations_directory.glob("*.json.gz")
     ]
-    if holdout == Holdout.TRAIN:
+    if holdout == Holdout.train:
         image_ids = set(filter(lambda id: hash(id) % 10 < 8, image_ids))
-    if holdout == Holdout.DEV:
+    if holdout == Holdout.dev:
         image_ids = set(filter(lambda id: hash(id) % 10 == 8, image_ids))
-    if holdout == Holdout.TEST:
+    if holdout == Holdout.test:
         image_ids = set(filter(lambda id: hash(id) % 10 == 9, image_ids))
     return image_ids
 
@@ -68,14 +68,14 @@ def get_sample_dicts(
     holdout: Optional[Holdout] = None,
     sample_size: Optional[Holdout] = None,  # For testing
 ) -> list[dict[str, Any]]:
-    image_ids = get_image_ids(holdout)
+    slugs = get_holdout_slugs(holdout)
     if sample_size is not None:
-        random.shuffle(image_ids)
-        image_ids = image_ids[:sample_size]
+        random.shuffle(slugs)
+        slugs = slugs[:sample_size]
 
     samples = []
 
-    for slug in image_ids:
+    for slug in slugs:
         image_path = Config.images_directory / f"{slug}.jpg"
         annotation_path = Config.annotations_directory / f"{slug}.json.gz"
         boxes: FrameAugmentedBoxes = (

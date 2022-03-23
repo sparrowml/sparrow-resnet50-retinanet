@@ -17,7 +17,7 @@ class Config:
     trained_model_path: Path = Path("/code/data/models/model.pth")
 
     # Dataset
-    batch_size: int = 2
+    batch_size: int = 4
     n_classes: int = 91
     n_workers: int = 4
     min_size: int = 800

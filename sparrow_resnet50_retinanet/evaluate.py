@@ -1,16 +1,23 @@
+from typing import Optional
+
 from collections import defaultdict
 
 from sparrow_datums import FrameAugmentedBoxes
 from sparrow_tracky import compute_moda_by_class, MODA
 
 from .config import Config
+from .dataset import Holdout, get_holdout_slugs
 
 
-def evaluate_predictions() -> None:
+def evaluate_predictions(holdout: Optional[str] = None) -> None:
+    if holdout is not None:
+        holdout = Holdout(holdout)
     moda_collector = defaultdict(MODA)
     n_evaluations = 0
-    for annotation_path in Config.annotations_directory.glob("*.json.gz"):
-        predictions_path = Config.predictions_directory / annotation_path.name
+    for slug in get_holdout_slugs(holdout):
+        filename = f"{slug}.json.gz"
+        annotation_path = Config.annotations_directory / filename
+        predictions_path = Config.predictions_directory / filename
         if annotation_path.exists() and predictions_path.exists():
             n_evaluations += 1
             predicted_boxes = FrameAugmentedBoxes.from_file(predictions_path)

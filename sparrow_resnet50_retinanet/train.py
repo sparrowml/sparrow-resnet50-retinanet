@@ -18,9 +18,9 @@ class RetinaNetTrainer(pl.LightningModule):
         super().__init__()
         self.model = RetinaNet(n_classes=Config.n_classes)
         self.learning_rate = Config.learning_rate
-        self.train_dataset = RetinaNetDataset(Holdout.TRAIN)
-        self.dev_dataset = RetinaNetDataset(Holdout.DEV)
-        self.test_dataset = RetinaNetDataset(Holdout.TEST)
+        self.train_dataset = RetinaNetDataset(Holdout.train)
+        self.dev_dataset = RetinaNetDataset(Holdout.dev)
+        self.test_dataset = RetinaNetDataset(Holdout.test)
         self.batch_size = Config.batch_size
         self.n_workers = Config.n_workers
 

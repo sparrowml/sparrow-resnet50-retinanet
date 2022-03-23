@@ -2,24 +2,24 @@ import os
 
 import torch
 
-from .dataset import get_image_ids, get_sample_dicts, Holdout, RetinaNetDataset
+from .dataset import get_holdout_slugs, get_sample_dicts, Holdout, RetinaNetDataset
 
 
 def test_train_set_is_roughly_80_percent():
-    all_samples = get_image_ids()
-    train_samples = get_image_ids(Holdout.TRAIN)
+    all_samples = get_holdout_slugs()
+    train_samples = get_holdout_slugs(Holdout.train)
     assert 0.75 < len(train_samples) / len(all_samples) < 0.85, "Bad sampling"
 
 
 def test_dev_set_is_roughly_10_percent():
-    all_samples = get_image_ids()
-    dev_samples = get_image_ids(Holdout.DEV)
+    all_samples = get_holdout_slugs()
+    dev_samples = get_holdout_slugs(Holdout.dev)
     assert 0.05 < len(dev_samples) / len(all_samples) < 0.15, "Bad sampling"
 
 
 def test_test_set_is_roughly_10_percent():
-    all_samples = get_image_ids()
-    test_samples = get_image_ids(Holdout.TEST)
+    all_samples = get_holdout_slugs()
+    test_samples = get_holdout_slugs(Holdout.test)
     assert 0.05 < len(test_samples) / len(all_samples) < 0.15, "Bad sampling"
 
 
