@@ -38,3 +38,5 @@ venv
 ._*
 .dvc/
 lightning_logs/
+data/
+notebooks/

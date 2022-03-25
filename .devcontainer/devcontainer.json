@@ -1,7 +1,7 @@
 {
 	"name": "sparrow-resnet50-retinanet",
 	"build": {
-		"dockerfile": "../docker/Dockerfile",
+		"dockerfile": "../Dockerfile",
 		"context": ".."
 	},
 	"settings": {
@@ -23,7 +23,7 @@
 		"source=${localEnv:HOME}/.gitconfig,target=/root/.gitconfig,type=bind,consistency=cached,readonly",
 		"source=/data,target=/data,type=bind",
 		"source=projectname-bashhistory,target=/commandhistory,type=volume"
-	  ],
+	],
 	"workspaceFolder": "/code",
 	"workspaceMount": "source=${localWorkspaceFolder},target=/code,type=bind,consistency=cached",
 	"runArgs": [

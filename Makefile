@@ -73,9 +73,7 @@ update-dev-deps:
 .PHONY: docker-build
 docker-build:
 	@echo Building docker $(IMAGE):$(VERSION) ...
-	docker build \
-		-t $(IMAGE):$(VERSION) . \
-		-f ./docker/Dockerfile --no-cache
+	docker build -t $(IMAGE):$(VERSION) .
 
 # Example: make docker-remove VERSION=latest
 # Example: make docker-remove IMAGE=some_name VERSION=0.1.0
@@ -83,6 +81,10 @@ docker-build:
 docker-remove:
 	@echo Removing docker $(IMAGE):$(VERSION) ...
 	docker rmi -f $(IMAGE):$(VERSION)
+
+.PHONY: docker-train
+docker-train: docker-build
+	docker run -v `pwd`:/code --ipc=host --gpus=all $(IMAGE):$(VERSION) train-model
 
 #* Cleaning
 .PHONY: pycache-remove
