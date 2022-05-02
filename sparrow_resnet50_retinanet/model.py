@@ -12,6 +12,8 @@ from .utils import result_to_boxes
 
 
 class RetinaNet(torch.nn.Module):
+    """RetinaNet detector."""
+
     def __init__(
         self,
         n_classes: int = Config.n_classes,
