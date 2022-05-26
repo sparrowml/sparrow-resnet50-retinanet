@@ -4,8 +4,8 @@ import numpy as np
 import torch
 import torchvision.transforms as T
 from PIL import Image
-from torchvision import models
 from sparrow_datums import FrameAugmentedBoxes, PType
+from torchvision import models
 
 from .config import Config
 from .utils import result_to_boxes

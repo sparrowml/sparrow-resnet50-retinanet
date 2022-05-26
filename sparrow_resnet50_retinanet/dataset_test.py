@@ -2,7 +2,7 @@ import os
 
 import torch
 
-from .dataset import get_holdout_slugs, get_sample_dicts, Holdout, RetinaNetDataset
+from .dataset import Holdout, RetinaNetDataset, get_holdout_slugs, get_sample_dicts
 
 
 def test_train_set_is_roughly_80_percent():

@@ -5,8 +5,8 @@ from sparrow_resnet50_retinanet import (
     import_predictions,
     run_predictions,
     sample_frames,
-    save_pretrained,
     save_checkpoint,
+    save_pretrained,
     train_model,
     version_annotations,
 )

@@ -3,7 +3,7 @@ from typing import Optional
 from collections import defaultdict
 
 from sparrow_datums import FrameAugmentedBoxes
-from sparrow_tracky import compute_moda_by_class, MODA
+from sparrow_tracky import MODA, compute_moda_by_class
 
 from .config import Config
 from .dataset import Holdout, get_holdout_slugs

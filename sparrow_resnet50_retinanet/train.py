@@ -1,6 +1,7 @@
+from typing import Optional, Union
+
 from operator import itemgetter
 from pathlib import Path
-from typing import Optional, Union
 
 import pytorch_lightning as pl
 import torch
@@ -8,7 +9,7 @@ from pytorch_lightning.callbacks import EarlyStopping
 from sparrow_tracky import MODA
 
 from .config import Config
-from .dataset import RetinaNetDataset, Holdout
+from .dataset import Holdout, RetinaNetDataset
 from .model import RetinaNet
 from .utils import batch_moda
 
