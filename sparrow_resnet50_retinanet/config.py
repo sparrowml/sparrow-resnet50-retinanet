@@ -1,20 +1,27 @@
+"""Config settings."""
 from dataclasses import dataclass
 from pathlib import Path
 
 from .labels import labels
 
+DATA_DIRECTORY = Path("/code/data")
+DATASET_DIRECTORY = DATA_DIRECTORY / "dataset"
+MODELS_DIRECTORY = DATA_DIRECTORY / "models"
+
 
 @dataclass
 class Config:
-    # Paths
-    data_directory: Path = Path("/code/data")
-    raw_videos_directory: Path = Path("/data/speedtrap/videos")
-    images_directory: Path = Path("/code/data/dataset/images")
-    annotations_directory: Path = Path("/code/data/dataset/annotations")
-    predictions_directory: Path = Path("/code/data/dataset/predictions")
+    """Config class."""
 
-    pretrained_model_path: Path = Path("/code/data/models/pretrained.pth")
-    trained_model_path: Path = Path("/code/data/models/model.pth")
+    # Paths
+    raw_videos_directory: Path = Path("/data/speedtrap/videos")
+    images_directory: Path = DATASET_DIRECTORY / "images"
+    annotations_directory: Path = DATASET_DIRECTORY / "annotations"
+    predictions_directory: Path = DATASET_DIRECTORY / "predictions"
+
+    pretrained_model_path: Path = MODELS_DIRECTORY / "pretrained.pth"
+    trained_model_path: Path =  MODELS_DIRECTORY / "model.pth"
+    onnx_model_path: Path = MODELS_DIRECTORY / "model.onnx"
 
     # Dataset
     batch_size: int = 4
